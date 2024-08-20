@@ -3,7 +3,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 
 # Model and Tokenizer Configuration
-MODEL_ID_MIND = "dots-13/llama-3-8B-chat-mindguardian-v1"
+MODEL_ID_MIND = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 TOKENIZER_ID = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 # Load Tokenizer and Model
