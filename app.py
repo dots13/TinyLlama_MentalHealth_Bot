@@ -2,20 +2,20 @@ import streamlit as st
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 
-# Model and Tokenizer Configuration
-MODEL_ID_MIND = "dots-13/llama-3-8B-chat-mindguardian-v1"
-TOKENIZER_ID = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+@st.cache_resource
+def load_model():
+    model_id = "your-model-id"  # Replace with your model's ID on Hugging Face
+    tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+    model = AutoModelForCausalLM.from_pretrained("dots-13/llama-3-8B-chat-mindguardian-v1")
+    model.eval()
+    return model, tokenizer
 
-# Load Tokenizer and Model
-tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_ID)
-model = AutoModelForCausalLM.from_pretrained(MODEL_ID_MIND)
-
-# Set Device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+model, tokenizer = load_model()
 
 # Streamlit Interface
 st.title("Hugging Face Chatbot")
+
+user_input = st.text_input("You:", "")
 
 def formatted_prompt(user_input: str) -> str:
     system_message = (
@@ -25,15 +25,13 @@ def formatted_prompt(user_input: str) -> str:
     )
     return f"{system_message}\n\nUser: {user_input}\nAssistant:"
 
-user_input = st.text_input("You:", "")
-
 # Initialize Text Generation Pipeline
 pipe = pipeline(
     "text-generation",
     model=model,
     tokenizer=tokenizer,
     torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-    device=0 if torch.cuda.is_available() else -1  # Set to -1 if using CPU
+    device=-1
 )
 
 # Generate and Display Response
