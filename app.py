@@ -2,6 +2,8 @@ import streamlit as st
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 
+hf_token = st.secrets["huggingface"]["token"]
+
 @st.cache_resource
 def load_model():
     try:
